@@ -1,6 +1,6 @@
 <?php
 
-namespace Tld\Domain\Plugin\Controllers;
+namespace WooCommerce\ProductAttributeGroup\Controllers;
 
 use Themosis\Route\BaseController;
 

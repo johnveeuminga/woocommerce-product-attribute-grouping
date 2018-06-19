@@ -4,5 +4,5 @@
  * Plugin services providers configuration.
  */
 return [
-    Tld\Domain\Plugin\Services\RoutingService::class
+    WooCommerce\ProductAttributeGroup\Services\RoutingService::class
 ];

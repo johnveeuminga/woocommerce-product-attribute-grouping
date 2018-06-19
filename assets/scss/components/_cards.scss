@@ -1,0 +1,10 @@
+.product-attribute-group__card{
+	@apply .rounded .overflow-hidden .shadow-lg .bg-white .p-4;
+
+	.product-attribute-group__card-body{
+		.drag{
+			min-height: 1em;
+			cursor: move;
+		}
+	}
+}

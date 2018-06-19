@@ -1,0 +1,63 @@
+{
+  "name": "woocommerce-product-attribute-group",
+  "version": "1.0.0",
+  "description": "WooCommerce Product Attribute Group",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js",
+    "watch": "watchify -v -t vueify -e assets/js/main.js -o dist/js/build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/themosis/plugin.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/themosis/plugin/issues"
+  },
+  "homepage": "https://github.com/themosis/plugin#readme",
+  "devDependencies": {
+    "axios": "^0.18.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "css-loader": "^0.28.11",
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-babel": "^7.0.1",
+    "gulp-clean-css": "^3.9.4",
+    "gulp-concat": "^2.6.1",
+    "gulp-notify": "^3.2.0",
+    "gulp-plumber": "^1.2.0",
+    "gulp-postcss": "^7.0.1",
+    "gulp-rename": "^1.3.0",
+    "gulp-sass": "^4.0.1",
+    "gulp-uglify": "^3.0.0",
+    "module-alias": "^2.1.0",
+    "node-sass": "^4.9.0",
+    "postcss-flexibility": "^2.0.0",
+    "postcss-loader": "^2.1.5",
+    "sass-loader": "^7.0.3",
+    "style-loader": "^0.21.0",
+    "vue": "^2.5.16",
+    "vue-loader": "^15.2.4",
+    "vue-style-loader": "^4.1.0",
+    "vue-template-compiler": "^2.5.16",
+    "vuedraggable": "^2.16.0",
+    "vueify": "^9.4.1",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.7"
+  },
+  "dependencies": {
+    "autoprefixer": "^8.6.2",
+    "browserify": "^16.2.2",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "gulp-util": "^3.0.8",
+    "tailwindcss": "^0.5.3",
+    "watchify": "^3.11.0"
+  },
+  "_moduleAliases": {
+    "~": "node_modules"
+  }
+}

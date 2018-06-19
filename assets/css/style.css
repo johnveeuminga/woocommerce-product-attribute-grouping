@@ -1,0 +1,6 @@
+@tailwind preflight;
+
+body{
+	display: grid;
+	transition: all .2s ease;
+}

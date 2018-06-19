@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Plugin Name: Plugin Name
- * Plugin URI: http://www.domain.tld
- * Description: Plugin description.
+ * Plugin Name: WooCommere Product Attribute Group
+ * Plugin URI: https://ctrlweb.ca/
+ * Description: Adds Product Attribute Grouping functionality.
  * Version: 1.0.0
- * Author: Your name
- * Author URI: http://framework.themosis.com/
- * Text Domain: plugin-textdomain.
+ * Author: John Vee Uminga
+ * Author URI: https://ctrlweb.ca/
+ * Text Domain: WC_PAG.
  * Domain Path: /languages
  */
 
@@ -16,6 +16,7 @@
  * below.
  */
 use Composer\Autoload\ClassLoader;
+use WooCommerce\ProductAttributeGroup\Includes\ProductAttributeGroup;
 
 /*
  * Default constants.
@@ -32,7 +33,7 @@ defined('DS') ? DS : define('DS', DIRECTORY_SEPARATOR);
  * TODO: #1
  * TODO: #2 - Update plugin textdomain first argument below.
  */
-defined('MY_PLUGIN_TD') ? MY_PLUGIN_TD : define('MY_PLUGIN_TD', 'plugin-textdomain');
+defined('WC_PAG') ? WC_PAG : define('WC_PAG', 'WC_PAG');
 
 /*
  * Plugin variables.
@@ -43,10 +44,11 @@ defined('MY_PLUGIN_TD') ? MY_PLUGIN_TD : define('MY_PLUGIN_TD', 'plugin-textdoma
  * TODO: #5 - Update class namespaces.
  */
 $vars = [
-    'slug' => 'plugin-key',
-    'name' => 'Plugin Name',
-    'namespace' => 'tld.domain.plugin',
-    'config' => 'tld_domain_plugin',
+    'slug' => 'woocommerce-product-attribute-group',
+    'name' => 'WooCommerce Product Attribute Grouping',
+    'namespace' => 'woocommerce-product-attribute-group',
+    'config' => 'woocommerce-product-attribute-group',
+    'file' => __FILE__
 ];
 
 /*
@@ -54,7 +56,7 @@ $vars = [
  */
 add_action('admin_notices', function () use ($vars) {
     if (!class_exists('\Themosis\Foundation\Application')) {
-        printf('<div class="notice notice-error"><p>%s</p></div>', __('This plugin requires the Themosis framework in order to work.', MY_PLUGIN_TD));
+        printf('<div class="notice notice-error"><p>%s</p></div>', __('This plugin requires the Themosis framework in order to work.', WC_PAG));
     }
 
     /*
@@ -62,7 +64,7 @@ add_action('admin_notices', function () use ($vars) {
      * into your theme `supports.config.php` in order to remove this admin notice.
      */
     if (!current_theme_supports($vars['slug']) && current_user_can('switch_themes')) {
-        printf('<div class="notice notice-warning"><p>%s<strong>%s</strong></p></div>', __('Your application does not handle the following plugin: ', MY_PLUGIN_TD), $vars['name']);
+        printf('<div class="notice notice-warning"><p>%s<strong>%s</strong></p></div>', __('Your application does not handle the following plugin: ', WC_PAG), $vars['name']);
     }
 });
 
@@ -128,7 +130,7 @@ container('action')->add('plugins_loaded', function () use ($vars) {
 	 * I18n
 	 * Todo: #2 - Replace constant below.
 	 */
-	load_plugin_textdomain(MY_PLUGIN_TD, false, trailingslashit(dirname(plugin_basename(__FILE__))).'languages');
+	load_plugin_textdomain(WC_PAG, false, trailingslashit(dirname(plugin_basename(__FILE__))).'languages');
 
     /*
      * Plugin admin files.
@@ -142,6 +144,5 @@ container('action')->add('plugins_loaded', function () use ($vars) {
 
 });
 
-/*
- * Add extra features below.
- */
+$app = new ProductAttributeGroup();
+$app->registerHook(__FILE__);

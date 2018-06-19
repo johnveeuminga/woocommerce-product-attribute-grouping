@@ -1,0 +1,10 @@
+@tailwind preflight;
+@tailwind components;
+@tailwind utilities;
+
+@import 'components/cards';
+
+
+#app{
+	padding-right: 1.250em;
+}
