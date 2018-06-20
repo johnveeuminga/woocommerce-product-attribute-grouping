@@ -132,7 +132,7 @@ class ProductAttributeGroup{
 	    if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name){
 	        $charset_collate = $wpdb->get_charset_collate();
 	        $sql = "CREATE TABLE $table_name(
-	        	productattrgrouping_id mediumint(9),
+	        	productattrgrouping_id mediumint(9) AUTO_INCREMENT,
 	            productattrgroup_id mediumint(9),
 	            productattr_name VARCHAR(255),
 	            attr_order mediumint(9) DEFAULT 0,

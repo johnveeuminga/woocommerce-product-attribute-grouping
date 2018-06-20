@@ -75,11 +75,15 @@ class ProductAttributeGroupAPI extends \WP_REST_Controller{
 		$terms = ProductAttributeGroup::all();
 		$product_attribute_group = [];
 
+		if(empty($terms)){
+			return false;
+		}
+
 		foreach($terms as $term){
 			$group = [];
 			$group['group'] = $term;
 			$group['attributes'] = [];
-			$product_attribute_grouping = ProductAttributeGrouping::where('productattrgroup_id', $term->term_id)->get();
+			$product_attribute_grouping = ProductAttributeGrouping::where('productattrgroup_id', $term->term_id)->orderBy('attr_order')->get();
 			if($product_attribute_grouping){
 				foreach($product_attribute_grouping as $attribute){
 					$group['attributes'][] = get_taxonomy($attribute->productattr_name);
@@ -96,10 +100,6 @@ class ProductAttributeGroupAPI extends \WP_REST_Controller{
 			if(!$product_attribute_grouping){
 				$attr_groups_array[] = $taxonomy;
 			}
-		}
-
-		if(empty($terms)){
-			return false;
 		}
 
 		return json_encode(['groups' => $product_attribute_group, 'product_attributes' => $attr_groups_array]);
@@ -128,19 +128,44 @@ class ProductAttributeGroupAPI extends \WP_REST_Controller{
 	public function createProductGrouping( $request ){
 		$attribute_groups = json_decode(Input::get('productAttributeGroup'));
 		foreach($attribute_groups as $attribute_group){
-			foreach($attribute_group->attributes as $attribute){
+			$present_attribute_group = ProductAttributeGrouping::where('productattrgroup_id', $attribute_group->group->term_id)->get();
+			$present_attribute_name = [];
+			$present_attribute_group->each( function($item, $key) use (&$present_attribute_name){
+				$present_attribute_name[] = $item->productattr_name;
+			});
+			$attr_array = [];
+			foreach($attribute_group->attributes as $key=>$attribute){
 				$product_grouping = ProductAttributeGrouping::where([
 					['productattrgroup_id', $attribute_group->group->term_id],
 					['productattr_name', $attribute->name]
-				])->get();
+				])->first();
 
-				if($product_grouping){
-					td('true');
-					tp($product_grouping);
+				if(empty($product_grouping)){
+					$new_product_grouping = new ProductAttributeGrouping();
+					$new_product_grouping->productattrgroup_id = $attribute_group->group->term_id;
+					$new_product_grouping->productattr_name = $attribute->name;
+					$new_product_grouping->attr_order = $key;
+					$new_product_grouping->save();
+					$attr_array[] = $new_product_grouping->productattr_name;
+				}else{
+					$product_grouping->attr_order = $key; 
+					$product_grouping->save();
+					$attr_array[] = $product_grouping->productattr_name;
+				}
+			}
+
+			foreach($present_attribute_name as $attribute){
+				if(!in_array($attribute, $attr_array)){
+					$product_grouping = ProductAttributeGrouping::where([
+						['productattrgroup_id', $attribute_group->group->term_id],
+						['productattr_name', $attribute]
+					])->first();
+					if($product_grouping){
+						$product_grouping->delete();
+					}
 				}
 			}
 		}
-		td();
 	}
 
 	/**

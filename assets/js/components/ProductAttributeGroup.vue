@@ -72,7 +72,10 @@
 				try{
 					let productAttributeGroupsData = await axios.get('/wp-json/wc-product-attribute-group/v1/product-attribute-group');
 					let productAttributeGroups = JSON.parse(productAttributeGroupsData.data);
-					console.log(productAttributeGroups);
+					if(!productAttributeGroups){
+						this.performingRequest = false;
+						return false;
+					}
 
 					for(let productAttributeGroup of productAttributeGroups.groups){
 					    this.productAttributeGroups.push( productAttributeGroup );
