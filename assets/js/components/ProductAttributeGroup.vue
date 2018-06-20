@@ -12,13 +12,13 @@
 			</div>
 			<div class="flex justify-between -mx-4">
 				<div class="product-attribute-group__wrap px-4 w-3/5">
-					<draggable class="flex -mx-4 flex-wrap"  :options='{group: "product-attribute-group-card-sortable"}' v-model="productAttributeGroups" :key="productAttributeGroups.term_id">
-						<div class="col px-4 w-1/2 mb-3 " v-for="productAttributeGroup in productAttributeGroups">
+					<draggable class="flex -mx-4 flex-wrap"  :options='{group: "product-attribute-group-card-sortable"}' v-model="productAttributeGroups" >
+						<div class="col px-4 w-1/2 mb-3 " v-for="(productAttributeGroup, index) in productAttributeGroups">
 							<div class="product-attribute-group__card">
-								<h2 class="product-attribute-group__card-title mb-4">{{productAttributeGroup.name}}</h2>
-								<draggable v-model="sampleList" class="product-attribute-group__card-body" :options='{group: "product-attribute-sortable"}'>
-									<div class="py-2 border-0 border-t border-b border-solid border-grey-dark -mb-px drag" v-for="sample in sampleList" :key="sample.name">
-										{{ sample.label }}
+								<h2 class="product-attribute-group__card-title mb-4">{{productAttributeGroup.group.name}}</h2>
+								<draggable v-model="productAttributeGroups[index].attributes" :key='productAttributeGroup.attributes.name' class="product-attribute-group__card-body drag-container" :options='{group: "product-attribute-sortable"}'>
+									<div class="py-2 border-0 border-t border-b border-solid border-grey-dark -mb-px drag" v-for="attribute in productAttributeGroup.attributes" :key="attribute.attributes">
+										{{ attribute.label }}
 									</div>
 								</draggable>
 							</div>
@@ -55,17 +55,7 @@
 				productAttributeGroups: [],
 				performingRequest: true,
 				sampleModel: [],
-				sampleList: [
-					{
-						name: 100,
-						label: 'Sample'
-					},
-					{
-						name: 101,
-						label: 'Sample 2'
-					},
-
-				]
+				sampleList: [],
 			}
 		},
 
@@ -81,13 +71,14 @@
 			async getContents() {
 				try{
 					let productAttributeGroupsData = await axios.get('/wp-json/wc-product-attribute-group/v1/product-attribute-group');
-					this.productAttributeGroups = JSON.parse(productAttributeGroupsData.data);
+					let productAttributeGroups = JSON.parse(productAttributeGroupsData.data);
+					console.log(productAttributeGroups);
 
-					let productAttributesData = await axios.get('/wp-json/wc-product-attribute-group/v1/product-attributes');
-					this.productAttributes = JSON.parse(productAttributesData.data);
-
+					for(let productAttributeGroup of productAttributeGroups.groups){
+					    this.productAttributeGroups.push( productAttributeGroup );
+					}
+					this.productAttributes = productAttributeGroups.product_attributes;
 					this.performingRequest = false;
-
 				} catch( err ){
 					console.log(err);
 				}

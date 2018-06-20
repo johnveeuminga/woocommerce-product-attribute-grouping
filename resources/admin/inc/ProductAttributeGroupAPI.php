@@ -8,6 +8,7 @@ use WP_Error;
 use WP_REST_Server;
 use WooCommerce\ProductAttributeGroup\Models\ProductAttribute;
 use WooCommerce\ProductAttributeGroup\Models\ProductAttributeGroup;
+use WooCommerce\ProductAttributeGroup\Models\ProductAttributeGrouping;
 
 class ProductAttributeGroupAPI extends \WP_REST_Controller{
 	/**
@@ -72,12 +73,36 @@ class ProductAttributeGroupAPI extends \WP_REST_Controller{
 	 */
 	public function getAllProductAttributeGroups(){
 		$terms = ProductAttributeGroup::all();
+		$product_attribute_group = [];
+
+		foreach($terms as $term){
+			$group = [];
+			$group['group'] = $term;
+			$group['attributes'] = [];
+			$product_attribute_grouping = ProductAttributeGrouping::where('productattrgroup_id', $term->term_id)->get();
+			if($product_attribute_grouping){
+				foreach($product_attribute_grouping as $attribute){
+					$group['attributes'][] = get_taxonomy($attribute->productattr_name);
+				}
+			}
+			$product_attribute_group[] = $group;
+		}
+
+		$attr_groups = ProductAttribute::all();
+		$attr_groups_array = [];
+		foreach($attr_groups as $attr){
+			$taxonomy = get_taxonomy($attr->name);
+			$product_attribute_grouping = ProductAttributeGrouping::where('productattr_name', $attr->name)->first();
+			if(!$product_attribute_grouping){
+				$attr_groups_array[] = $taxonomy;
+			}
+		}
 
 		if(empty($terms)){
 			return false;
 		}
 
-		return json_encode($terms);
+		return json_encode(['groups' => $product_attribute_group, 'product_attributes' => $attr_groups_array]);
 	}
 
 	/**
@@ -101,7 +126,21 @@ class ProductAttributeGroupAPI extends \WP_REST_Controller{
 	 * @return void
 	 */
 	public function createProductGrouping( $request ){
-		td(Input::get('productAttributeGroup'));
+		$attribute_groups = json_decode(Input::get('productAttributeGroup'));
+		foreach($attribute_groups as $attribute_group){
+			foreach($attribute_group->attributes as $attribute){
+				$product_grouping = ProductAttributeGrouping::where([
+					['productattrgroup_id', $attribute_group->group->term_id],
+					['productattr_name', $attribute->name]
+				])->get();
+
+				if($product_grouping){
+					td('true');
+					tp($product_grouping);
+				}
+			}
+		}
+		td();
 	}
 
 	/**

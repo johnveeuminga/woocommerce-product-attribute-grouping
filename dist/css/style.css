@@ -4646,7 +4646,7 @@ button,
   padding: 1rem;
 }
 
-.product-attribute-group__card .product-attribute-group__card-body .drag {
+.product-attribute-group__card .product-attribute-group__card-body.drag-container {
   min-height: 1em;
   cursor: move;
 }
